@@ -19,6 +19,8 @@ async function createOrderCallback() {
   
       const orderData = await response.json();
   
+      console.log("Create Order", orderData);
+
       if (orderData.id) {
         return orderData.id;
       } else {

@@ -12,11 +12,13 @@ use PaypalServerSdkLib\Models\Builders\AmountWithBreakdownBuilder;
 $PAYPAL_CLIENT_ID = getenv('PAYPAL_CLIENT_ID');
 $PAYPAL_CLIENT_SECRET = getenv('PAYPAL_CLIENT_SECRET');
 
+// dd($PAYPAL_CLIENT_ID, $PAYPAL_CLIENT_SECRET);
+
 $client = PaypalServerSdkClientBuilder::init()
     ->clientCredentialsAuthCredentials(
         ClientCredentialsAuthCredentialsBuilder::init(
-            $PAYPAL_CLIENT_ID,
-            $PAYPAL_CLIENT_SECRET
+            "AX2G2WuMQQJNrOJh2gNlWfy-B2_gX_SLDOA9gfGcRUtgNmiJ23BN5JRMVGAeEglhLZ0Enkm0XwR5u9qS",
+            "EJMwH2zhJG3jqF_LyVrLTX9RJIdbzRSYjFlxw3wwO_F7nj4uRRAfQZPVtWY8XH1J11tLt6cnZAa6i0KX"
         )
     )
     ->environment(Environment::SANDBOX)
@@ -29,6 +31,7 @@ $client = PaypalServerSdkClientBuilder::init()
 function createOrder($cart)
 {
     global $client;
+
 
     $orderBody = [
         'body' => OrderRequestBuilder::init(
@@ -45,6 +48,8 @@ function createOrder($cart)
     ];
 
     $apiResponse = $client->getOrdersController()->createOrder($orderBody);
+
+    // die($apiResponse);
 
     return handleResponse($apiResponse);
 }
@@ -90,7 +95,8 @@ if ($endpoint === '/') {
 
 if ($endpoint === '/api/orders') {
     $data = json_decode(file_get_contents('php://input'), true);
-    $cart = $data['cart'];
+    // $cart = $data['cart'];
+    $cart = array();
     header('Content-Type: application/json');
     try {
         $orderResponse = createOrder($cart);
@@ -114,4 +120,13 @@ if (str_ends_with($endpoint, '/capture')) {
         echo json_encode(['error' => $e->getMessage()]);
         http_response_code(500);
     }
+}
+
+function dd(...$vars) {
+    foreach ($vars as $var) {
+        echo '<pre>';
+        var_dump($var);
+        echo '</pre>';
+    }
+    die();
 }
